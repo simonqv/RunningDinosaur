@@ -1,0 +1,46 @@
+Assignment 1
+
+- Den uppdaterar både sekund tiotalet och minut entalet samtidigt. Eftersom att vi valt att inkludera flera 
+knapptryckningar i if-satserna. _x:x_
+
+- TRISE 	avgör om porten är en output (0) eller input (1)
+  TRISESET	skriver till TRISE på specifika bits
+  TRISECLR 	tömmer specifika bits på TRISE
+
+- $v0 eftersom $v0-$v1 är return value register.
+
+- Om man vet vilken I/O device man vill hitta info om, då vet vi även vilken pin som är kopplad, vilket står i i/o 
+  shield manualen. Därefter kan vi gå till manualen för chipkit och se vilka bits.
+
+
+Assignment 2
+
+- Vi använder IFSCLR(0) = 0x100; (clear) för att ta bort flaggan. "Tömmer" biten som håller flaggan.
+
+- Flaggan förblir sann. Eftersom den är sann kommer vi inte vänta på vår delay, så "timern" går väldigt fort!
+  Displayen updateras extremt snabbt.
+
+- T2CON bestämmer vad för prescale man har, skalar om frekvensen.
+  PR2 bestämmer hur lång väntan mellan time-outs.
+
+- Den uppdateras pålitligt, men siffran ändras bara när displayen uppdateras, alltså varje sekund. Det går att 
+  skriva om så att displayen uppdateras även vid knapptryckning (utan tick).
+
+
+Assignment 3
+
+- IFSCLR(0) = 0x100; på samma sätt som förut.
+
+- Föralltid sann. Uppdaterar tiden hela tiden, väldigt snabbt. Räknar inte prime. Snurrar runt i user_isr för alltid
+
+- i vectors.S på rad 209. Den ligger och kollar efter om flaggan har ändrats och om den är sann så anropar den i 
+  sin tur vår interrupt rutin. Innan vi user_isr anropas sparas alla register så att de inte kan råka skrivas över, 
+  efter så återställs de till vad de var innan!
+
+- IEC(0) = 0x100;      // Enable timer interrupts (Device register)
+  
+  ei 
+  jal $ra 		// for the assembly code. ei är en EPC register, en privilege instruction. sedan hoppar den tillbaka
+  			       med jal till där interrupten skedde. Addressen tillbaka är lagrad i $ra. (Processor registers)
+
+
