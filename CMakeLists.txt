@@ -3,4 +3,4 @@ project(RunningDinosaur C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(RunningDinosaur main.c)
+add_executable(RunningDinosaur Project/main.c)
