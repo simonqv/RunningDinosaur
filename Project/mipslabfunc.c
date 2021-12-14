@@ -36,6 +36,9 @@ int i;
 for(i = cyc; i > 0; i--);
 }
 
+/*
+ * Initialisation for inputs, timer and interrupt
+ */
 void init() {
 
 	/* Set BTN4, BTN3 and BTN2 as input */
@@ -85,6 +88,9 @@ while(!(SPI2STAT & 1));
 return SPI2BUF;
 }
 
+/*
+ * Function to display menu before game starts
+ */
 int display_menu(void) {
 	while(1) {
 		display_string( 0, "MENU" );
@@ -109,6 +115,9 @@ int get_number(int min, int max) {
 	 return current_time % max + min;
 }
 
+/*
+ * Decides what kind of obstacle to place on the game board, by adding the new obstacle to the obstacles array
+ */
 void set_next_obstacle(const int obstacle_label) {
 	int i;
 	for(i = 0; i < LENGTH_OF_OBS_ARR; i++) {
@@ -126,6 +135,9 @@ void set_next_obstacle(const int obstacle_label) {
 	}
 }
 
+/*
+ * Converts a number to a sequence of chars by using modulo and remainders
+ */
 int * conv_to_char_sequence(int number, int size) {
 	int array[size];
 	int i,c,number_copy;
@@ -141,6 +153,9 @@ int * conv_to_char_sequence(int number, int size) {
 	return array;
 }
 
+/*
+ *
+ */
 void add_to_board(int x_coordinate, int y_coordinate, int *chars, int size) {
 	int i,k,c;
 	for(i = 0; i < size; i++){
@@ -151,6 +166,9 @@ void add_to_board(int x_coordinate, int y_coordinate, int *chars, int size) {
 	}
 }
 
+/*
+ *
+ */
 void add_score(int x_coordinate, int y_coordinate) {
 	//int chars;
 	int i,k,c,temp;
@@ -166,6 +184,9 @@ void add_score(int x_coordinate, int y_coordinate) {
 	}
 }
 
+/*
+ * Function to let user input initials
+ */
 int * get_name( void ) {
 	int hej[5] = {65,32,65,32,65};
 
@@ -200,6 +221,9 @@ int * get_name( void ) {
 	return hej;
 }
 
+/*
+ * Compares current score to the ones on the high score list and places it accordingly
+ */
 void update_highscore(int* old_highscore, int score) {
 	int *first_place = (old_highscore+0);
 	int *second_place = (old_highscore+1);
@@ -210,6 +234,7 @@ void update_highscore(int* old_highscore, int score) {
 	if(score < 0) {
 		return;
 	}
+    // If score is lower than second place, replace the last one
 	else if(score <= *second_place) {
 		*third_place = score;
 		old_names[2][0] = *ascii_codes;
@@ -217,6 +242,7 @@ void update_highscore(int* old_highscore, int score) {
 		old_names[2][4] = *(ascii_codes+4);
 		return;
 	}
+    // If score is lower than first place, but higher than second place shift second place to third and insert score on second place
 	else if(score <= *first_place) {
 		*third_place = *second_place;
 		old_names[2][0] = old_names[1][0];
@@ -229,6 +255,7 @@ void update_highscore(int* old_highscore, int score) {
 		old_names[1][4] = *(ascii_codes+4);
 		return;
 	}
+    // If score is higher than first place, shift everything down a step and insert score to the top
 	else if(score > *first_place) {
 		*third_place = *second_place;
 		old_names[2][0] = old_names[1][0];
@@ -251,7 +278,9 @@ void update_highscore(int* old_highscore, int score) {
 }
 
 
-
+/*
+ * Function to create strings to display
+ */
 char * create_highscore_entry(int rank, int score, int size) {
 	char array[size];
 	int i,c,score_copy;
@@ -274,7 +303,9 @@ char * create_highscore_entry(int rank, int score, int size) {
 	return array;
 }
 
-
+/*
+ * Function for displaying the high score board
+ */
 void display_highscore(int* highscore) {
 	display_string(0, "HIGHSCORE");
 	int i;
@@ -286,6 +317,10 @@ void display_highscore(int* highscore) {
 	display_update();
 }
 
+/*
+ * interrupt service routine
+ * interrupts with timer and increments score as well as difficulty
+ */
 void user_isr(void){
 	IFSCLR(0) = 0x100;
 	time_out++;
@@ -324,7 +359,9 @@ int pow2(int base, int exp){
 	  return result;
 }
 
-// Copy board. Dimensions for both matricies must be 128x32.
+/*
+ * Copy board. Dimensions for both matrices must be 128x32.
+ */
 void copy_board(const char matrix[128][32], char matrix_copy[128][32]) {
 	int x,y;
 	for (x = 0; x < BOARD_WIDTH; x++){
@@ -333,7 +370,9 @@ void copy_board(const char matrix[128][32], char matrix_copy[128][32]) {
 	}
 }
 
-
+/*
+ * function to check if an obstacle is a wall or not
+ */
 int is_wall(int pos_x) {
 	int i, j;
 	for (j = -1; j < BOB_WIDTH; j++) {
@@ -347,7 +386,9 @@ int is_wall(int pos_x) {
 }
 
 
-// Add bob into board into coordinate (pos_x, pos_y)
+/*
+ * Places Bob (character) on the board with the given coordinates pos_x and pos_y
+ */
 int add_bob_to_board(int pos_x, int pos_y) {
 	int x,y;
 	int game_end_flag = 0;
@@ -365,10 +406,13 @@ int add_bob_to_board(int pos_x, int pos_y) {
 	return game_end_flag;
 }
 
-
+/*
+ * Places obstacles on to the game board
+ */
 void place_obstacle(int pos_xx, int obs_num){
 	int pos_y, len_x, len_y;
-	if (obs_num == ROCK) {
+	// Different sizes of sprites for different obstacles, as well as different heights
+    if (obs_num == ROCK) {
 		pos_y = 32-7-1;
 		len_x = sizeof(rock)/sizeof(rock[0]);
 		len_y = sizeof(rock[0])/sizeof(rock[0][0]);
@@ -383,24 +427,26 @@ void place_obstacle(int pos_xx, int obs_num){
 		len_x = sizeof(orb)/sizeof(orb[0]); //2
 		len_y = sizeof(orb[0])/sizeof(orb[0][0]); // 28
 		}
-		int x,y;
-		for (x = 0; x < len_x; x++){
-			for (y = 0; y < len_y; y++) {
-				if (obs_num == ROCK) {
-					board_copy[x+pos_xx][y+pos_y] = rock[x][y];
-				}
-				if (obs_num == WALL) {
-					board_copy[x+pos_xx][y+pos_y] = wall[x][y];
-				}
-				if (obs_num == ORB) {
-					board_copy[x+pos_xx][y+pos_y] = orb[x][y];
-				}
-			}
-
-		}
-
+    // updates x-coordinate
+    int x,y;
+    for (x = 0; x < len_x; x++){
+        for (y = 0; y < len_y; y++) {
+            if (obs_num == ROCK) {
+                board_copy[x+pos_xx][y+pos_y] = rock[x][y];
+            }
+            if (obs_num == WALL) {
+                board_copy[x+pos_xx][y+pos_y] = wall[x][y];
+            }
+            if (obs_num == ORB) {
+                board_copy[x+pos_xx][y+pos_y] = orb[x][y];
+            }
+        }
+    }
 }
 
+/*
+ * Converts board array to representation the screen understands
+ */
 void display_current_board() {
 	int x,y,res,p,c,i;
 	for (y = 0, p = 0; y < BOARD_HEIGHT; y += 8, p++){	//32
@@ -422,6 +468,9 @@ void display_current_board() {
 	}
 }
 
+/*
+ * Clears the display
+ */
 void clear_display(void) {
 	uint8_t data = 0;
 	int page, i;
@@ -438,9 +487,13 @@ void clear_display(void) {
 	}
 }
 
+/*
+ * Move Bon on buttonpress or release
+ */
 void move(int *flag_x, int *flag_y) {
-	if (*flag_x == 1) {
-		// Update x-coordinate for bob
+	// Checks flag for moving in x-direction
+    if (*flag_x == 1) {
+		// Update x-coordinate for Bob
 		if(bob_x >= BOB_MAX_X) {
 			*flag_x = 2;
 		}
@@ -457,6 +510,7 @@ void move(int *flag_x, int *flag_y) {
 		bob_x = 114;
 	}
 
+    // Checks flag for moving in y-direction
 	if(*flag_y == 1){
 		// Update y-coordinate for bob
 		bob_y--;
@@ -472,6 +526,9 @@ void move(int *flag_x, int *flag_y) {
 	}
 }
 
+/*
+ * Empties the textbuffer
+ */
 void clear_text_buffer(void) {
 	int i;
 	for(i = 0; i < 4; i++){
@@ -479,6 +536,9 @@ void clear_text_buffer(void) {
 	}
 }
 
+/*
+ * Specific initialisation for the display
+ */
 void display_init(void) {
 	DISPLAY_CHANGE_TO_COMMAND_MODE;
 	quicksleep(10);
@@ -512,7 +572,9 @@ void display_init(void) {
 	clear_display();
 }
 
-
+/*
+ * Displays a string on the screen on the given line
+ */
 void display_string(int line, char *s) {
 int i;
 if(line < 0 || line >= 4)
@@ -528,6 +590,9 @@ for(i = 0; i < 16; i++)
 		textbuffer[line][i] = ' ';
 }
 
+/*
+ * Displays image
+ */
 void display_image(int x, uint8_t data[128][4]) {
 	int i, j;
 
@@ -547,87 +612,33 @@ void display_image(int x, uint8_t data[128][4]) {
 	}
 }
 
-void display_update(void) {
-int i, j, k;
-int c;
-for(i = 0; i < 4; i++) {
-	DISPLAY_CHANGE_TO_COMMAND_MODE;
-	spi_send_recv(0x22);
-	spi_send_recv(i);
-
-	spi_send_recv(0x0);
-	spi_send_recv(0x10);
-
-	DISPLAY_CHANGE_TO_DATA_MODE;
-
-	for(j = 0; j < 16; j++) {
-		c = textbuffer[i][j];
-		if(c & 0x80)
-			continue;
-
-		for(k = 0; k < 8; k++)
-			spi_send_recv(font[c*8 + k]);
-	}
-}
-}
-
-/* Helper function, local to this file.
- Converts a number to hexadecimal ASCII digits. */
-static void num32asc( char * s, int n )
-{
-int i;
-for( i = 28; i >= 0; i -= 4 )
-  *s++ = "0123456789ABCDEF"[ (n >> i) & 15 ];
-}
-
 /*
-* nextprime
-*
-* Return the first prime number larger than the integer
-* given as a parameter. The integer must be positive.
-*/
-#define PRIME_FALSE   0     /* Constant to help readability. */
-#define PRIME_TRUE    1     /* Constant to help readability. */
-int nextprime( int inval )
-{
- register int perhapsprime = 0; /* Holds a tentative prime while we check it. */
- register int testfactor; /* Holds various factors for which we test perhapsprime. */
- register int found;      /* Flag, false until we find a prime. */
+ * Updates the display
+ */
+void display_update(void) {
+    int i, j, k;
+    int c;
+    for(i = 0; i < 4; i++) {
+        DISPLAY_CHANGE_TO_COMMAND_MODE;
+        spi_send_recv(0x22);
+        spi_send_recv(i);
 
- if (inval < 3 )          /* Initial sanity check of parameter. */
- {
-   if(inval <= 0) return(1);  /* Return 1 for zero or negative input. */
-   if(inval == 1) return(2);  /* Easy special case. */
-   if(inval == 2) return(3);  /* Easy special case. */
- }
- else
- {
-   /* Testing an even number for primeness is pointless, since
-    * all even numbers are divisible by 2. Therefore, we make sure
-    * that perhapsprime is larger than the parameter, and odd. */
-   perhapsprime = ( inval + 1 ) | 1 ;
- }
- /* While prime not found, loop. */
- for( found = PRIME_FALSE; found != PRIME_TRUE; perhapsprime += 2 )
- {
-   /* Check factors from 3 up to perhapsprime/2. */
-   for( testfactor = 3; testfactor <= (perhapsprime >> 1) + 1; testfactor += 1 )
-   {
-     found = PRIME_TRUE;      /* Assume we will find a prime. */
-     if( (perhapsprime % testfactor) == 0 ) /* If testfactor divides perhapsprime... */
-     {
-       found = PRIME_FALSE;   /* ...then, perhapsprime was non-prime. */
-       goto check_next_prime; /* Break the inner loop, go test a new perhapsprime. */
-     }
-   }
-   check_next_prime:;         /* This label is used to break the inner loop. */
-   if( found == PRIME_TRUE )  /* If the loop ended normally, we found a prime. */
-   {
-     return( perhapsprime );  /* Return the prime we found. */
-   }
- }
- return( perhapsprime );      /* When the loop ends, perhapsprime is a real prime. */
+        spi_send_recv(0x0);
+        spi_send_recv(0x10);
+
+        DISPLAY_CHANGE_TO_DATA_MODE;
+
+        for(j = 0; j < 16; j++) {
+            c = textbuffer[i][j];
+            if(c & 0x80)
+                continue;
+
+            for(k = 0; k < 8; k++)
+                spi_send_recv(font[c*8 + k]);
+        }
+    }
 }
+
 
 /*
 * itoa
