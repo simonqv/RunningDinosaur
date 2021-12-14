@@ -1,4 +1,4 @@
-/* mipslabmain.c
+/* main.c
 
    This file written 2015 by Axel Isaksson,
    modified 2015, 2017 by F Lundevall
@@ -7,15 +7,15 @@
 
    For copyright and licensing, see file COPYING */
 
-#include <stdint.h>   /* Declarations of uint_32 and the like */
-#include <pic32mx.h>  /* Declarations of system-specific addresses etc */
-#include "mipslab.h"  /* Declatations for these labs */
+#include "mipslab.h"
+
 
 int main(void) {
-        /*
-	  This will set the peripheral bus clock to the same frequency
-	  as the sysclock. That means 80 MHz, when the microcontroller
-	  is running at 80 MHz. Changed 2017, as recommended by Axel.
+
+  /*
+  This will set the peripheral bus clock to the same frequency
+  as the sysclock. That means 80 MHz, when the microcontroller
+  is running at 80 MHz. Changed 2017, as recommended by Axel.
 	*/
 	SYSKEY = 0xAA996655;  /* Unlock OSCCON, step 1 */
 	SYSKEY = 0x556699AA;  /* Unlock OSCCON, step 2 */
@@ -48,30 +48,17 @@ int main(void) {
 	/* SPI2STAT bit SPIROV = 0; */
 	SPI2STATCLR = 0x40;
 	/* SPI2CON bit CKP = 1; */
-        SPI2CONSET = 0x40;
+  SPI2CONSET = 0x40;
 	/* SPI2CON bit MSTEN = 1; */
 	SPI2CONSET = 0x20;
 	/* SPI2CON bit ON = 1; */
 	SPI2CONSET = 0x8000;
 
 	display_init();
-	//display_string(0, "KTH/ICT lab");
-	//display_string(1, "in Computer");
-	//display_string(2, "Engineering");
-	display_string(3, "Game!");
-	display_update();
 
-	// (position on screen, name of picture, picture width, picture height (in "blocks"))
-	display_image(96, bob, bob_width, bob_height);
+	init();
 
+	run();
 
-	//labinit(); /* Do any lab-specific initialization */
-
-	//game_init();
-
-	while( 1 )
-	{
-	  //labwork(); /* Do lab-specific things again and again */
-	}
 	return 0;
 }

@@ -1,8 +1,4 @@
-mipslabdata.c.o: mipslabdata.c \
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdint.h \
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdint-gcc.h \
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h \
- mipslab.h \
+game.c.o: game.c mipslab.h \
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdlib.h \
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/klibc/extern.h \
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/klibc/inline.h \
@@ -10,12 +6,11 @@ mipslabdata.c.o: mipslabdata.c \
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdbool.h \
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdio.h \
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdarg.h \
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/string.h
-mipslabdata.c :
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdint.h :
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdint-gcc.h :
- /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h :
- mipslab.h :
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/string.h \
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdint.h \
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdint-gcc.h \
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h
+game.c mipslab.h :
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdlib.h :
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/klibc/extern.h :
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/klibc/inline.h :
@@ -24,3 +19,6 @@ mipslabdata.c :
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdio.h :
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdarg.h :
  /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/string.h :
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/stdint.h :
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/lib/gcc/mipsel-mcb32-elf/4.9.2/include/stdint-gcc.h :
+ /Applications/mcb32tools.app/Contents/Resources/Toolchain/include/pic32mx.h :
